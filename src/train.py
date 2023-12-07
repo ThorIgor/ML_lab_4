@@ -108,9 +108,9 @@ def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classif
         best_ra = 0
         for C in [10**i for i in range(-1, 4)]:
             if classifier == "LR":
-                model = LogisticRegression(max_iter = 100, C = C)
+                model = LogisticRegression(max_iter = 5000, C = C)
             elif classifier == "SVC":
-                model = SVC(max_iter = 100, C = C)
+                model = SVC(max_iter = 5000, C = C)
             model.fit(X_train, Y_train[col])
             Y_pred = model.predict(X_val)
 
