@@ -12,5 +12,5 @@ def test_inference_embeddings():
     inference_embeddings("test_data/test_inf_dataset.csv", "test_data/test_inf_output.csv", "test_models_embeddings")
 
 def test_inference_no_embeddings():
-    inference_no_embeddings("test_data/test_inf_dataset.csv", "test_data/test_inf_output.csv", "test_models_embeddings")
+    inference_no_embeddings("test_data/test_inf_dataset.csv", "test_data/test_inf_output.csv", "test_models_no_embeddings")
 
