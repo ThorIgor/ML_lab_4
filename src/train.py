@@ -3,7 +3,6 @@ import numpy as np
 
 import nltk
 from nltk.tokenize import word_tokenize
-nltk.download('punkt')
 
 from sentence_transformers import SentenceTransformer
 
@@ -18,6 +17,8 @@ from sklearn.metrics import roc_auc_score
 import re
 
 import argparse
+
+nltk.download('punkt')
 
 def train_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier:str = "LR", embeddings_file:str = None, device = 'cpu'):
     print("==Train with embedding==")

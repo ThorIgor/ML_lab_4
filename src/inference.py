@@ -3,7 +3,7 @@ import numpy as np
 
 import nltk
 from nltk.tokenize import word_tokenize
-nltk.download('punkt')
+
 
 from sentence_transformers import SentenceTransformer
 
@@ -17,6 +17,7 @@ import re
 
 import argparse
 
+nltk.download('punkt')
 
 def inference_embeddings(input_file:str, output_file:str, models_folder:str, embeddings_file:str = None, device:str = 'cpu'):
     if models_folder[-1] != '/' and models_folder[-1] != '\\':
