@@ -60,7 +60,7 @@ def inference_no_embeddings(input_file:str, output_file:str, models_folder:str):
     texts = [text for text in df['comment_text']]
     cleaned_texts = [clean_text(text) for text in texts]
     tokenized_texts = [tokenize_text(text) for text in cleaned_texts]
-    vectorizer = TfidfVectorizer(vocabulary = eval(open(models_folder + "vocabualry.txt", "r").read()))
+    vectorizer = TfidfVectorizer(vocabulary = eval(open(models_folder + "vocabulary.txt", "r").read()))
     vectors = vectorizer.fit_transform(tokenized_texts)
 
     lr_models = {}
