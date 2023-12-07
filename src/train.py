@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 
+import nltk
 from nltk.tokenize import word_tokenize
+nltk.download('punkt')
 
 from sentence_transformers import SentenceTransformer
 
@@ -18,6 +20,7 @@ import re
 import argparse
 
 def train_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier:str = "LR", embeddings_file:str = None, device = 'cpu'):
+    print("==Train with embedding==")
     if output_path[-1] != '/' and output_path[-1] != '\\':
         output_path += '/'
 
@@ -35,9 +38,10 @@ def train_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier
     X_train = embeddings[:split_n, :]
     X_val = embeddings[split_n:, :]
 
-    Y_train = dataset[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][:split_n]
-    Y_val = dataset[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][split_n:]
+    Y_train = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][:split_n]
+    Y_val = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][split_n:]
 
+    print("Training ...")
     lr_models = {}
     lr_ra = []
     for col in Y_train.columns:
@@ -76,6 +80,7 @@ def tokenize_text(text):
     return ' '.join(words)
 
 def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier:str = "LR"):
+    print("==Train no embedding==")
     if output_path[-1] != '/' and output_path[-1] != '\\':
         output_path += '/'
     
@@ -85,16 +90,17 @@ def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classif
     cleaned_texts = [clean_text(text) for text in texts]
     tokenized_texts = [tokenize_text(text) for text in cleaned_texts]
     vectorizer = TfidfVectorizer()
-    vectors = vectorizer(tokenized_texts)
+    vectors = vectorizer.fit_transform(tokenized_texts)
 
     split_n = int(df.shape[0]*split)
 
     X_train = vectors[:split_n, :]
     X_val = vectors[split_n:, :]
 
-    Y_train = dataset[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][:split_n]
-    Y_val = dataset[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][split_n:]
+    Y_train = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][:split_n]
+    Y_val = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']][split_n:]
 
+    print("Training ...")
     lr_models = {}
     lr_ra = []
     for col in Y_train.columns:
@@ -102,9 +108,9 @@ def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classif
         best_ra = 0
         for C in [10**i for i in range(-1, 4)]:
             if classifier == "LR":
-                model = LogisticRegression(max_iter = 5000, C = C)
+                model = LogisticRegression(max_iter = 100, C = C)
             elif classifier == "SVC":
-                model = SVC(max_iter = 5000, C = C)
+                model = SVC(max_iter = 100, C = C)
             model.fit(X_train, Y_train[col])
             Y_pred = model.predict(X_val)
 
@@ -132,7 +138,7 @@ if __name__ == "__main__":
     parser.add_argument("output_path", help = "path and folder where to save model", type = str)
     parser.add_argument("-c", "--classifier", help = "type of classifier: SVC, LR (Logistic Regression) (default: LR)", type = str, default = "LR")
     parser.add_argument("-s", "--split", help = "train, validation split (default: 0.9)", type = float, default=0.9)
-    parser.add_argument("-ue", "--use_embeddings", help = "use embedding model llmrails/ember-v1", action="store_false")
+    parser.add_argument("-ue", "--use_embeddings", help = "use embedding model llmrails/ember-v1", action='store_true')
     parser.add_argument("-ef", "--embeddings_file", help = "path to npy file with embeddings", type = str, default = None)
     parser.add_argument("-d", "--device", help = "cpu or cuda", type = str, default = "cpu")
 

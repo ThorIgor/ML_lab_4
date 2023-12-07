@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 
+import nltk
 from nltk.tokenize import word_tokenize
+nltk.download('punkt')
 
 from sentence_transformers import SentenceTransformer
 
@@ -58,7 +60,7 @@ def inference_no_embeddings(input_file:str, output_file:str, models_folder:str):
     cleaned_texts = [clean_text(text) for text in texts]
     tokenized_texts = [tokenize_text(text) for text in cleaned_texts]
     vectorizer = TfidfVectorizer(vocabulary = eval(open(models_folder + "vocabualry.txt", "r").read()))
-    vectors = vectorizer(tokenized_texts)
+    vectors = vectorizer.fit_transform(tokenized_texts)
 
     lr_models = {}
     for file in os.listdir(models_folder):
