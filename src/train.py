@@ -17,7 +17,7 @@ import re
 
 import argparse
 
-def train_embeddings(dataset:str, output_path:str, split:float, classifier:str = "LR", embeddings_file:str = None, device = 'cpu'):
+def train_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier:str = "LR", embeddings_file:str = None, device = 'cpu'):
     if output_path[-1] != '/' and output_path[-1] != '\\':
         output_path += '/'
 
@@ -75,7 +75,7 @@ def tokenize_text(text):
     words = [word.lower() for word in words if word.isalpha() and word.lower()]
     return ' '.join(words)
 
-def train_no_embeddings(dataset:str, output_path:str, split:float, classifier:str = "LR"):
+def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classifier:str = "LR"):
     if output_path[-1] != '/' and output_path[-1] != '\\':
         output_path += '/'
     
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     parser.add_argument("output_path", help = "path and folder where to save model", type = str)
     parser.add_argument("-c", "--classifier", help = "type of classifier: SVC, LR (Logistic Regression) (default: LR)", type = str, default = "LR")
     parser.add_argument("-s", "--split", help = "train, validation split (default: 0.9)", type = float, default=0.9)
-    parser.add_argument("-ue", "--use_embeddings", help = "use embedding model llmrails/ember-v1")
+    parser.add_argument("-ue", "--use_embeddings", help = "use embedding model llmrails/ember-v1", action="store_false")
     parser.add_argument("-ef", "--embeddings_file", help = "path to npy file with embeddings", type = str, default = None)
     parser.add_argument("-d", "--device", help = "cpu or cuda", type = str, default = "cpu")
 
