@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 from sentence_transformers import SentenceTransformer
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
 
@@ -29,7 +30,8 @@ def inference_embeddings(input_file:str, output_file:str, models_folder:str, emb
 
     lr_models = {}
     for file in os.listdir(models_folder):
-        lr_models[file.split(".")[0][3:]] = joblib.load(models_folder + file)
+        if 'joblib' in file:
+            lr_models[file.split(".")[0]] = joblib.load(models_folder + file)
 
     sb = pd.DataFrame(df['id'])
     for key, model in lr_models.items():
@@ -60,7 +62,8 @@ def inference_no_embeddings(input_file:str, output_file:str, models_folder:str):
 
     lr_models = {}
     for file in os.listdir(models_folder):
-        lr_models[file.split(".")[0][3:]] = joblib.load(models_folder + file)
+        if 'joblib' in file:
+            lr_models[file.split(".")[0]] = joblib.load(models_folder + file)
 
     sb = pd.DataFrame(df['id'])
     for key, model in lr_models.items():
@@ -74,7 +77,7 @@ if __name__ == "__main__":
 
     parser.add_argument("input_file", help = "path to csv file which contains 'comment_text' column", type = str)
     parser.add_argument("output_file", help = "path and name for output file", type = str)
-    parser.add_argument("models", help = "path to folder with classification model", type = str, default = "models/")
+    parser.add_argument("models", help = "path to folder with classification model", type = str, default = "models/LR_no_embeddings")
     parser.add_argument("-ue", "--use_embeddings", help = "use embedding model llmrails/ember-v1")
     parser.add_argument("-ef", "--embeddings_file", help = "path to npy file with embeddings", type = str, default = None)
     parser.add_argument("-d", "--device", help = "cpu or cuda", type = str, default = "cpu")
