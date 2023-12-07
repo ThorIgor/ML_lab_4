@@ -127,6 +127,8 @@ def train_no_embeddings(dataset:str, output_path:str, split:float = 0.9, classif
         lr_ra.append(best_ra)
     print(f"Mean Roc Auc: {np.mean(lr_ra)}")
 
+    with open(output_path + "vocabualry.txt", "w") as f:
+        f.write(str(list(vectorizer.vocabulary_.keys())))
     for col, model in lr_models.items():
         joblib.dump(model, output_path+f'{col}.joblib')
 
