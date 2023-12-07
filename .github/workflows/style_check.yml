@@ -28,5 +28,5 @@ jobs:
 
     - name: Run style check
       run: |
-        ruff check
+        ruff check --fix
         # Add other style check commands if needed
